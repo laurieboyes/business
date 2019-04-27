@@ -1,0 +1,10 @@
+controller:
+  config:
+    enable-modsecurity: 'true'
+    enable-owasp-modsecurity-crs: 'true'
+  extraVolumes:
+    - name: modsec-logs
+      emptyDir: {}
+  extraVolumeMounts:
+    - mountPath: /var/log/modsec
+      name: modsec-logs
