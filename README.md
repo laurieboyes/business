@@ -27,23 +27,13 @@ gcloud container clusters get-credentials super-cool-cluster --zone europe-west1
 ```
 
 ## Set up other stuff for deployment
-helm init --history-max 200
-```
 
-
-
-# BRB shiiiiiet
+So I was hitting this error
 
 ```
-1 error(s) occurred:
-
-* helm_release.nginx_ingress_controller: 1 error(s) occurred:
-
-* helm_release.nginx_ingress_controller: error installing: Post https://34.76.135.48/apis/extensions/v1beta1/namespaces/kube-system/deployments: dial tcp 34.76.135.48:443: i/o timeout
-
-Terraform does not automatically rollback in the face of errors.
-Instead, your Terraform state file has been partially updated with
-any resources that successfully completed. Please address the error
-above and apply again to incrementally change your infrastructure.
-
+helm_release.nginx_ingress_controller: rpc error: code = Unknown desc = configmaps is forbidden: User "system:serviceaccount:kube-system:default" cannot list configmaps in the namespace "kube-system"
 ```
+
+Which I think is because using google cloud means I’m using rolebased access control and I hadn’t realised. So I did this and it just worked lol: https://stackoverflow.com/a/46688254 and it worked just worked ???
+
+My understanding is that this created a service account in helm’s namespace and gave it admin powers. Todo: understand this properly. Here’s something I should read: https://helm.sh/docs/using_helm/#role-based-access-control

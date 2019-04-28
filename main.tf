@@ -8,7 +8,7 @@ resource "google_container_cluster" "gke-cluster" {
   name               = "super-cool-cluster"
   network            = "default"
   zone               = "europe-west1-b"
-  initial_node_count = 3
+  initial_node_count = 2
 }
 
 provider "kubernetes" {
@@ -16,10 +16,8 @@ provider "kubernetes" {
 }
 
 resource "helm_release" "nginx_ingress_controller" {
-  #   provider = "helm.k8"
-  name    = "nginx-ingress"
-  chart   = "stable/nginx-ingress"
-  version = "1.4.0"
+  name  = "nginx-ingress"
+  chart = "stable/nginx-ingress"
 
   set {
     name  = "controller.minAvailable"
