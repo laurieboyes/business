@@ -46,3 +46,26 @@ My understanding is that this created a service account in helm’s namespace an
 ```
 kubectl apply -f resources/helm-stuff.yaml
 ```
+
+## Whenever the cluster gets recreated
+
+```
+kubectl config delete-cluster gke_business-238908_europe-west1-b_super-cool-cluster
+gcloud container clusters get-credentials super-cool-cluster --zone europe-west1-b --project business-238908
+
+# Stuff pinched from SO https://stackoverflow.com/a/46688254
+
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+helm init --service-account tiller --upgrade
+
+# ???
+helm init --history-max 200
+
+# If it does a terraform which kills the cluster it seems to need to deploy the ingress controller in a seperate apply. Whatevz
+terraform apply
+
+# Apply the helm stuff on the new cluster
+kubectl apply -f resources/helm-stuff.yaml
+```
