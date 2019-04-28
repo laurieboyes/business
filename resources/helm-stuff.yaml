@@ -1,0 +1,46 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: cool-app
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cool-app
+    spec:
+      containers:
+        - name: cool-app
+          image: yeasy/simple-web
+          ports:
+            - containerPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-cool-service
+  annotations:
+    # use the shared ingress-nginx
+    kubernetes.io/ingress.class: 'nginx'
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: cool-app
+              servicePort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cool-app
+spec:
+  type: NodePort
+  selector:
+    app: cool-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

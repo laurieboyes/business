@@ -14,6 +14,9 @@ My playground for getting my head around kubernetes, terraform and helm
 terraform init
 terraform plan
 terraform apply
+
+# start up tiller
+helm init --history-max 200
 ```
 
 ## Get authenticated with GCP for local dev/deploy
@@ -34,6 +37,12 @@ So I was hitting this error
 helm_release.nginx_ingress_controller: rpc error: code = Unknown desc = configmaps is forbidden: User "system:serviceaccount:kube-system:default" cannot list configmaps in the namespace "kube-system"
 ```
 
-Which I think is because using google cloud means I’m using rolebased access control and I hadn’t realised. So I did this and it just worked lol: https://stackoverflow.com/a/46688254 and it worked just worked ???
+Which I think is because using google cloud means I’m using rolebased access control and I hadn’t realised. So I did this and it just worked lol: https://stackoverflow.com/a/46688254 and it just worked ???
 
 My understanding is that this created a service account in helm’s namespace and gave it admin powers. Todo: understand this properly. Here’s something I should read: https://helm.sh/docs/using_helm/#role-based-access-control
+
+## Deploy helm resources
+
+```
+kubectl apply -f resources/helm-stuff.yaml
+```
