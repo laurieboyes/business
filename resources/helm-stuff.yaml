@@ -23,6 +23,23 @@ metadata:
     # use the shared ingress-nginx
     kubernetes.io/ingress.class: 'nginx'
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      modsecurity_rules '
+        #WAF is on and blocking any traffic that breaches rules,
+        SecRuleEngine On
+        SecAuditLog /var/log/modsec/audit.log
+        SecAuditLogParts ABCIJDEFHZ
+        SecAuditEngine RelevantOnly
+        SecAuditLogFormat JSON
+        #Override the allowed methods rule, to set desired methods
+        SecAction \
+        "id:900200,\
+         phase:1,\
+         nolog,\
+         pass,\
+         t:none,\
+         setvar:\'tx.allowed_methods=GET PUT POST DELETE\'"
+      ';
 spec:
   rules:
     - http:
