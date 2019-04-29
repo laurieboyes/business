@@ -59,6 +59,7 @@ kubectl create serviceaccount --namespace kube-system tiller
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
 helm init --service-account tiller --upgrade
+(todo steal the config for this from https://github.com/ovotech/flow-platform-infra-environment)
 
 # ???
 helm init --history-max 200
@@ -69,3 +70,8 @@ terraform apply
 # Apply the helm stuff on the new cluster
 kubectl apply -f resources/helm-stuff.yaml
 ```
+
+## TODO
+
+- Use preemptible nodes (see https://github.com/ovotech/flow-platform-infra-environment/blob/9b17c62e76409a57c24065bbff61af63ea8e5149/terraform/cluster.tf#L152)
+- change machine type to a cheaper one
